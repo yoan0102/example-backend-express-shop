@@ -6,15 +6,30 @@ class Server {
     this.port = process.env.PORT;
 
     //middlewares
+    this.middlewares();
 
     this.routes();
   }
 
-  middlewares() {}
+  middlewares() {
+    this.app.use(express.static("./public"));
+  }
 
   routes() {
-    this.app.get("/", (req, res) => {
-      res.send("HEllo World");
+    this.app.get("/api", (req, res) => {
+      res.json({ ok: true, message: "get Api" });
+    });
+    this.app.put("/api", (req, res) => {
+      res.json({ ok: true, message: "put Api" });
+    });
+    this.app.post("/api", (req, res) => {
+      res.json({ ok: true, message: "post APi" });
+    });
+    this.app.delete("/api", (req, res) => {
+      res.json({ ok: true, message: "delete Api" });
+    });
+    this.app.patch("/api", (req, res) => {
+      res.json({ ok: true, message: "patch Api" });
     });
   }
 
