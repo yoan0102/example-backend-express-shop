@@ -16,7 +16,16 @@ const issetEmail = async (email = "") => {
   }
 };
 
+const issetUserId = async (id) => {
+  //verificar Email
+  const issetUser = await User.findById(id);
+  if (!issetUser) {
+    throw new Error(`El user ${id} no existe`);
+  }
+};
+
 module.exports = {
   isRoleValido,
   issetEmail,
+  issetUserId,
 };

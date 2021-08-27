@@ -2,20 +2,25 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 
-const getUsers = (req, res) => {
-  const { q, page = 1, limit = 10 } = req.query;
+const getUsers = async (req, res) => {
+  // const { q, page = 1, limit = 10 } = req.query;
+  const { limit = 5, desde = 0 } = req.query;
+  const query = { state: true };
+
+  const [usersTotal, users] = await Promise.all([
+    User.countDocuments(query),
+    User.find(query).skip(Number(desde)).limit(Number(limit)),
+  ]);
+
   res.json({
-    ok: true,
-    message: "get Api - Controller",
-    q,
-    page,
-    limit,
+    usersTotal,
+    users,
   });
 };
 
 const putUsers = async (req, res) => {
   const { id } = req.params;
-  const { password, google, ...resto } = req.body;
+  const { _id, password, google, ...resto } = req.body;
 
   if (password) {
     //Encriptar password
@@ -25,7 +30,7 @@ const putUsers = async (req, res) => {
 
   const userDB = await User.findByIdAndUpdate(id, resto);
 
-  res.status(200).json({ ok: true, message: "put Api - Controller", userDB });
+  res.status(200).json(userDB);
 };
 
 const postUsers = async (req, res) => {
@@ -46,8 +51,14 @@ const postUsers = async (req, res) => {
   res.status(201).json({ user });
 };
 
-const deleteUsers = (req, res) => {
-  res.status(201).json({ ok: true, message: "delete APi - Controller" });
+const deleteUsers = async (req, res) => {
+  const { id } = req.params;
+
+  //Fisicamente
+  // const user = await User.findByIdAndDelete(id);
+  //Desactivar state
+  const user = await User.findByIdAndUpdate(id, { state: false });
+  res.status(201).json(user);
 };
 
 const patchUsers = (req, res) => {
