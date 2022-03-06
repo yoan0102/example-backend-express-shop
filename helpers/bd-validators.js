@@ -1,31 +1,32 @@
-const Role = require("../models/role");
-const User = require("../models/user");
+const Role = require('../models/role')
+const User = require('../models/user')
 
-const isRoleValido = async (role = "") => {
-  const issetRole = await Role.findOne({ role });
+const isRoleValido = async (role = '') => {
+  const issetRole = await Role.findOne({ role })
+  console.log(issetRole)
   if (!issetRole) {
-    throw new Error(`El role ${role} no está registrado en la BD`);
+    throw new Error(`El role ${role} no está registrado en la BD`)
   }
-};
+}
 
-const issetEmail = async (email = "") => {
+const issetEmail = async (email = '') => {
   //verificar Email
-  const emailRes = await User.findOne({ email });
+  const emailRes = await User.findOne({ email })
   if (emailRes) {
-    throw new Error(`El email ${email} ya esta registrado`);
+    throw new Error(`El email ${email}, ya esta registrado`)
   }
-};
+}
 
 const issetUserId = async (id) => {
   //verificar Email
-  const issetUser = await User.findById(id);
+  const issetUser = await User.findById(id)
   if (!issetUser) {
-    throw new Error(`El user ${id} no existe`);
+    throw new Error(`El user ${id} no existe`)
   }
-};
+}
 
 module.exports = {
   isRoleValido,
   issetEmail,
   issetUserId,
-};
+}
