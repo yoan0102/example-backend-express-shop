@@ -3,7 +3,6 @@ const User = require('../models/user')
 
 const isRoleValido = async (role = '') => {
   const issetRole = await Role.findOne({ role })
-  console.log(issetRole)
   if (!issetRole) {
     throw new Error(`El role ${role} no está registrado en la BD`)
   }

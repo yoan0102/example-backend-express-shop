@@ -8,7 +8,16 @@ const {
   patchUsers,
 } = require('../controllers/user')
 
-const { errorValidation } = require('../middleware/errorValidation')
+// const { errorValidation } = require('../middleware/errorValidation')
+// const { validateJwt } = require('../middleware/validate-jwt')
+// const { isAdminRole, haveRole } = require('../middleware/validateRole')
+const {
+  errorValidation,
+  haveRole,
+  isAdminRole,
+  validateJwt,
+} = require('../middleware')
+
 const {
   isRoleValido,
   issetEmail,
@@ -50,6 +59,9 @@ router.post(
 router.delete(
   '/:id',
   [
+    validateJwt,
+    // isAdminRole,
+    haveRole('ADMIN_ROLE', 'USER_ROLE', 'VENTAS_ROLE'),
     check('id', 'No es un ID válido').isMongoId(),
     check('id').custom(issetUserId),
     errorValidation,

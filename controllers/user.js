@@ -55,9 +55,10 @@ const deleteUsers = async (req, res) => {
   const { id } = req.params
 
   //Fisicamente
-  // const user = await User.findByIdAndDelete(id);
-  //Desactivar state
-  const user = await User.findByIdAndUpdate(id, { state: false })
+  // const user = await User.findByIdAndDelete(id)
+
+  const user = await User.findByIdAndUpdate(id, { state: false }, { new: true })
+
   res.status(201).json(user)
 }
 
