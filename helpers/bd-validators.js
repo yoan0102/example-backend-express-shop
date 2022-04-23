@@ -1,6 +1,5 @@
-const { Category } = require('../models')
+const { User, Category } = require('../models')
 const Role = require('../models/role')
-const User = require('../models/user')
 
 const isRoleValido = async (role = '') => {
   const issetRole = await Role.findOne({ role })
@@ -25,6 +24,10 @@ const issetUserId = async (id) => {
   }
 }
 
+/**
+ * Categories
+ * @param {*} id 
+ */
 const issetCategory = async (id) => {
   const issetCategory = await Category.findById(id)
   if (!issetCategory) {

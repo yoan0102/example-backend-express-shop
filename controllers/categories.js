@@ -9,7 +9,7 @@ exports.getCategories = async (req, res = response) => {
 
     const [totalCategories, categories] = await Promise.all([
       Category.countDocuments(query),
-      Category.find(query).skip(parseInt(desde)).limit(parseInt(limit)).populate('user')
+      Category.find(query).skip(parseInt(desde)).limit(parseInt(limit)).populate('user', 'name')
     ])
 
     res.status(200).json({
@@ -21,13 +21,12 @@ exports.getCategories = async (req, res = response) => {
     res.status(500).json({ msg: `Error server ${error}` })
   }
 
-
-
 }
+
 exports.getCategory = async (req, res = response) => {
   try {
     const { id } = req.params
-    const category = await Category.findById(id).populate('user')
+    const category = await Category.findById(id).populate('user', 'name')
 
     res.status(200).json(category)
 
@@ -60,12 +59,14 @@ exports.createCategory = async (req, res = response) => {
   res.status(201).json(category)
 
 }
+
 exports.putCategory = async (req, res = response) => {
   try {
     const { id } = req.params
-    const name = req.body.name.toUpperCase()
-
-    const category = await Category.findByIdAndUpdate(id, { name: name }, { new: true })
+    const { state, user, ...data } = req.body
+    data.name = data.name.toUpperCase()
+    data.user = req.user._id
+    const category = await Category.findByIdAndUpdate(id, data, { new: true })
     res.status(200).json(category)
 
   } catch (error) {
@@ -73,14 +74,13 @@ exports.putCategory = async (req, res = response) => {
   }
 }
 
-//Todo:  id - state:false
 exports.deleteCategory = async (req, res) => {
   try {
     const { id } = req.params
 
-    await Category.findByIdAndUpdate(id, { state: false })
+    const deleteCategory = await Category.findByIdAndUpdate(id, { state: false }, { new: true })
 
-    res.status(201).json({ msg: 'User deleted successfully' })
+    res.status(201).json(deleteCategory)
 
   } catch (error) {
     res.status(500).json({ msg: `Error server ${error}` })

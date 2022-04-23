@@ -27,6 +27,7 @@ router.post('/', [
 
 router.put('/:id', [
   validateJwt,
+  check('name', 'Name is required').notEmpty(),
   check('id', 'Category not validate').isMongoId().custom(issetCategory),
   errorValidation
 ], putCategory)
