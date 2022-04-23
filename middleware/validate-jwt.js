@@ -7,7 +7,7 @@ exports.validateJwt = async (req = request, res = response, next) => {
   const token = req.header('x-token')
 
   if (!token) {
-    returnres.status(401).json({ msg: 'Token obligatorio' })
+    return res.status(401).json({ msg: 'Token obligatorio' })
   }
   try {
     const { uid } = jwt.verify(token, process.env.SECRET_KEY)
