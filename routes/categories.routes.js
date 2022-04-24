@@ -21,7 +21,6 @@ router.get('/:id', [
 router.post('/', [
   validateJwt,
   check('name', 'Name is required').notEmpty(),
-  check(''),
   errorValidation
 ], createCategory)
 

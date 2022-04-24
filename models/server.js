@@ -10,7 +10,7 @@ class Server {
       auth: '/api/auth',
       users: '/api/users',
       categories: '/api/categories',
-      products: 'api/products',
+      products: '/api/products',
     }
 
 
