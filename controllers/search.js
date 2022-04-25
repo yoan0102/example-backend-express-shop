@@ -4,7 +4,7 @@ const { User, Category, Product } = require('../models')
 
 const collectionsPermitidas = [
   'users',
-  'category',
+  'categories',
   'products',
   'roles',
 ]
@@ -14,10 +14,64 @@ const searchUsers = async (termino = '', res = response) => {
 
   if (isMongoId) {
     const user = await User.findById(termino)
-    res.json({
+    return res.json({
       results: user ? [user] : []
     })
   }
+
+  const regex = new RegExp(termino, 'i')
+
+  const users = await User.find({
+    $or: [{ name: regex }, { email: regex }],
+    $and: [{ state: true }]
+  })
+
+  res.json({
+    results: users
+  })
+
+}
+
+const searchCategory = async (termino = '', res = response) => {
+
+  const isMongoId = ObjectId.isValid(termino)
+
+  if (isMongoId) {
+    const category = await Category.findById(termino)
+    return res.json({
+      results: category ? [category] : []
+    })
+  }
+
+  const regex = new RegExp(termino, 'i')
+
+  const categories = await Category.find({ name: regex, state: true })
+
+  res.json({
+    results: categories
+  })
+
+}
+
+const searchProduct = async (termino = '', res = response) => {
+
+  const isMongoId = ObjectId.isValid(termino)
+
+  if (isMongoId) {
+    const product = await Product.findById(termino).populate('category', 'name')
+    return res.json({
+      results: product ? [product] : []
+    })
+  }
+
+  const regex = new RegExp(termino, 'i')
+
+  const products = await Product.find({ name: regex, state: true }).populate('category', 'name')
+
+  res.json({
+    results: products
+  })
+
 }
 
 exports.search = async (req = request, res = response) => {
@@ -36,8 +90,10 @@ exports.search = async (req = request, res = response) => {
       searchUsers(termino, res)
       break;
     case 'products':
+      searchProduct(termino, res)
       break;
-    case 'category':
+    case 'categories':
+      searchCategory(termino, res)
       break;
     default:
       res.status(500).json('Se me olvido hacer esta busqueda')
